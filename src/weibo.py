@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+__version__ = '1.01'
 __author__ = 'Liao Xuefeng (askxuefeng@gmail.com)'
 
 '''
