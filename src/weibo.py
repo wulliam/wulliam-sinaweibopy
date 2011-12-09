@@ -97,7 +97,7 @@ Content-Type: text/plain
     data.append('--%s--\r\n' % boundary)
     return '\r\n'.join(data), boundary
 
-_CONTENT_TYPES = { '.png': 'image/png', '.gif': 'image/gif', '.jpg': 'images/jpeg', '.jpeg': 'images/jpeg', '.jpe': 'images/jpeg' }
+_CONTENT_TYPES = { '.png': 'image/png', '.gif': 'image/gif', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.jpe': 'image/jpeg' }
 
 def _guess_content_type(ext):
     return _CONTENT_TYPES.get(ext, 'application/octet-stream')
