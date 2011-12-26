@@ -171,7 +171,7 @@ class APIClient(object):
 
     def set_access_token(self, access_token, expires_in):
         self.access_token = str(access_token)
-        self.expires = time.time() + expires_in
+        self.expires = expires_in
 
     def get_authorize_url(self, display='default'):
         '''
@@ -189,6 +189,7 @@ class APIClient(object):
                 client_secret = self.client_secret, \
                 redirect_uri = self.redirect_uri, \
                 code = code, grant_type = 'authorization_code')
+        r.expires_in += int(time.time())
         return r
 
     def is_expires(self):
