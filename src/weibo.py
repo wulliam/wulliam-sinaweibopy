@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-__version__ = '1.01'
+__version__ = '1.03'
 __author__ = 'Liao Xuefeng (askxuefeng@gmail.com)'
 
 '''
-Python client SDK for sina weibo API v2.
+Python client SDK for sina weibo API using OAuth 2.
 '''
 
 try:
@@ -41,7 +41,7 @@ class APIError(StandardError):
 
 class JsonObject(dict):
     '''
-    general json object that can bind any fields.
+    general json object that can bind any fields but also act as a dict.
     '''
     def __getattr__(self, attr):
         return self[attr]
@@ -62,7 +62,6 @@ def _encode_params(**kw):
 def _encode_multipart(**kw):
     '''
     A sample multipart/form-data; boundary=ABCD:
-
 --ABCD
 Content-Disposition: form-data; name="title"
 \r\n
@@ -156,7 +155,7 @@ class APIClient(object):
     '''
     API client using synchronized invocation.
     '''
-    def __init__(self, app_key, app_secret, redirect_uri, response_type='code', domain='api.weibo.com', version='2'):
+    def __init__(self, app_key, app_secret, redirect_uri=None, response_type='code', domain='api.weibo.com', version='2'):
         self.client_id = app_key
         self.client_secret = app_secret
         self.redirect_uri = redirect_uri
@@ -171,23 +170,32 @@ class APIClient(object):
 
     def set_access_token(self, access_token, expires_in):
         self.access_token = str(access_token)
-        self.expires = expires_in
+        self.expires = float(expires_in)
 
-    def get_authorize_url(self, display='default'):
+    def get_authorize_url(self, redirect_uri=None, display='default'):
         '''
         return the authroize url that should be redirect.
         '''
+        redirect = redirect_uri if redirect_uri else self.redirect_uri
+        if not redirect:
+            raise APIError('21305', 'Parameter absent: redirect_uri', 'OAuth2 request')
         return '%s%s?%s' % (self.auth_url, 'authorize', \
                 _encode_params(client_id = self.client_id, \
                         response_type = 'code', \
                         display = display, \
-                        redirect_uri = self.redirect_uri))
+                        redirect_uri = redirect))
 
-    def request_access_token(self, code):
+    def request_access_token(self, code, redirect_uri=None):
+        '''
+        return access token as object: {"access_token":"your-access-token","expires_in":12345678}, expires_in is standard unix-epoch-time
+        '''
+        redirect = redirect_uri if redirect_uri else self.redirect_uri
+        if not redirect:
+            raise APIError('21305', 'Parameter absent: redirect_uri', 'OAuth2 request')
         r = _http_post('%s%s' % (self.auth_url, 'access_token'), \
                 client_id = self.client_id, \
                 client_secret = self.client_secret, \
-                redirect_uri = self.redirect_uri, \
+                redirect_uri = redirect, \
                 code = code, grant_type = 'authorization_code')
         r.expires_in += int(time.time())
         return r
