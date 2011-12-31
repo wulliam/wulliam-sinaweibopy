@@ -114,7 +114,7 @@ def _get_cities():
         city_list.append(oc)
         w_dict[oc.weibo_code] = oc.yahoo_code
         y_dict[oc.yahoo_code] = oc.weibo_code
-    return city_list, w_dict, y_dict
+    return (city_list, w_dict, y_dict)
 
 def _make_cookie(uid, access_token):
     s = u'%s:%s' % (uid, access_token)
@@ -219,7 +219,7 @@ def _get_weather_code(eng_code):
 def _get_weather(city):
     if not city:
         return r'{"code":"500","Message":"Missing Input: city"}'
-    data = cache.get(city)
+    data = cache.get('city-%s' % city)
     if data:
         logging.info('got data from cache')
         web.header('X-Cache', 'Hit from cache')
@@ -256,7 +256,7 @@ def _get_weather(city):
             exp = 3600
         logging.info('fetched and cache for %d seconds.' % exp)
         json_data = json.dumps(data)
-        cache.set(city, json_data, exp)
+        cache.set('city-%s' % city, json_data, exp)
         web.header('X-Cache', 'Miss from cache')
         return json_data
     return None
@@ -286,7 +286,7 @@ def share():
     client.set_access_token(user.access_token, user.expires_in)
     obj_data = json.loads(data)
     fcast = obj_data['forecast'][0]
-    s = u'%s %s今日%s%s，%d ~ %d度。来自城市天气预报 http://t.cn/SxvH12' % (_get_today()[0], obj_data['city'], fcast['condition'], fcast['image'], round(fcast['low_temperature']), round(fcast['high_temperature']))
+    s = u'%s %s今日%s%s，%d ~ %d度。来自城市天气预报 http://t.cn/SxvH12' % (_get_today()[0], obj_data['city'], fcast['condition'], fcast['image'], int(fcast['low_temperature']), int(fcast['high_temperature']))
     client.post.statuses__update(status=s)
     return u'''<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
