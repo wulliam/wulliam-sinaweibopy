@@ -2,7 +2,4 @@ syntax: regexp
 ^.*\.pyc$
 
 syntax: regexp
-^\.settings*$
-
-syntax: regexp
-^\..*$
+^.*\..*$
