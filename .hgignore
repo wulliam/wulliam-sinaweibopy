@@ -1,5 +1,9 @@
-syntax: regexp
-^.*\.pyc$
+syntax: glob
+*.pyc
 
 syntax: regexp
 ^.*\..*$
+
+syntax: glob
+configdemo.py
+ 

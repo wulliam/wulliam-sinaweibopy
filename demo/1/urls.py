@@ -21,8 +21,10 @@ from framework import odict
 from framework import cache
 from framework import db
 
-from config import APP_KEY
-from config import APP_SECRET
+try:
+    from configdemo import APP_KEY, APP_SECRET
+except ImportError:
+    from config import APP_KEY, APP_SECRET
 
 _CALLBACK_URL = 'http://sinaweibopy.sinaapp.com/callback'
 
