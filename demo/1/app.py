@@ -22,7 +22,7 @@ class PageHandler(object):
     def GET(self, path):
         logging.info('GET /%s' % path)
         if path=='':
-            raise web.seeother('/index')
+            path = 'index'
         return self._handle(path)
 
     def POST(self, path):
