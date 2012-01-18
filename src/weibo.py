@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-__version__ = '1.03'
+__version__ = '1.04'
 __author__ = 'Liao Xuefeng (askxuefeng@gmail.com)'
 
 '''
@@ -194,3 +194,6 @@ class APIClient(object):
 
     def is_expires(self):
         return not self.access_token or time.time() > self.expires
+
+    def __getattr__(self, attr):
+        return getattr(self.get, attr)
