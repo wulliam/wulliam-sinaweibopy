@@ -110,6 +110,12 @@ class APIClient(object):
         return '%s/oauth/authorize?oauth_token=%s' % (self.api_url, oauth_token)
 
     def get_access_token(self):
+        '''
+        get access token from request token:
+        request_token = OAuthToken(oauth_token, oauth_secret, oauth_verifier)
+        client = APIClient(appkey, appsecret, request_token)
+        access_token = client.get_access_token()
+        '''
         params = {
             'oauth_consumer_key': self.app_key,
             'oauth_timestamp': str(int(time.time())),
